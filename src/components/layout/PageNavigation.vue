@@ -1,12 +1,12 @@
 <template>
-  <div class="fixed bottom-0 left-64 right-80 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between z-40">
+  <div class="fixed bottom-0 left-64 right-80 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-end z-40">
     <div class="flex items-center gap-4">
       <!-- Save & Exit -->
       <button
         @click="handleSaveAndExit"
-        class="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+        class="px-4 py-2 bg-white border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
       >
-        Save & exit
+        Save and exit
       </button>
 
       <!-- Previous Button -->
@@ -14,26 +14,29 @@
         @click="handlePrevious"
         :disabled="!canGoPrevious"
         :class="[
-          'px-4 py-2 rounded-lg transition-colors',
+          'px-4 py-2 bg-white border rounded-lg transition-colors flex items-center gap-2',
           canGoPrevious
-            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+            ? 'border-blue-300 text-blue-700 hover:bg-blue-50'
+            : 'border-gray-200 text-gray-400 cursor-not-allowed'
         ]"
       >
-        Previous
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Previous</span>
+      </button>
+
+      <!-- Primary Button (Continue/Submit) -->
+      <button
+        @click="handlePrimary"
+        class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2"
+      >
+        <span>{{ primaryButtonText }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
       </button>
     </div>
-
-    <!-- Primary Button -->
-    <button
-      @click="handlePrimary"
-      class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-    >
-      <span>{{ primaryButtonText }}</span>
-      <svg v-if="primaryButtonText !== 'Submit'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-    </button>
   </div>
 </template>
 
