@@ -43,14 +43,15 @@
               <!-- Number for active or incomplete pages -->
               <span v-else>{{ index + 1 }}</span>
             </div>
-            <span 
+            <button
+              @click="handlePageClick(page.id)"
               :class="[
-                'flex-1',
+                'flex-1 text-left cursor-pointer hover:underline',
                 page.isActive ? 'font-bold' : 'font-normal'
               ]"
             >
               {{ page.title }}
-            </span>
+            </button>
           </div>
 
           <!-- Form blocks (only visible for active page) -->
@@ -90,11 +91,12 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useOnboardingStore } from '../../stores/onboardingStore'
 import { formData } from '../../data/formData'
 
 const route = useRoute()
+const router = useRouter()
 const store = useOnboardingStore()
 
 const currentPage = computed(() => {
@@ -133,4 +135,19 @@ const pages = computed(() => {
     }
   })
 })
+
+const handlePageClick = (pageId) => {
+  // Progress is already saved in the store as user interacts with forms
+  // Navigate to the clicked page
+  const routeMap = {
+    'page1': '/step1/page1',
+    'page2': '/step1/page2',
+    'page3': '/step1/page3'
+  }
+  
+  const targetRoute = routeMap[pageId]
+  if (targetRoute && route.path !== targetRoute) {
+    router.push(targetRoute)
+  }
+}
 </script>
