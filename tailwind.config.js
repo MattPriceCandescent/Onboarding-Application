@@ -15,7 +15,8 @@ export default {
             dark: '#6B7280',
             darker: '#1F2937'
           }
-        }
+        },
+        answered: '#656565'
       }
     },
   },

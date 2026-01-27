@@ -22,6 +22,13 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     step3: false
   })
 
+  // Step submission dates - tracks when each step was submitted
+  const stepSubmissions = ref({
+    step1: null,
+    step2: null,
+    step3: null
+  })
+
   // Initialize answers structure
   function initializeAnswers(step, page, blockId, questionId) {
     if (!answers.value[step]) answers.value[step] = {}
@@ -96,9 +103,33 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     pageCompletion.value[step][page] = true
   }
 
+  // Mark step as submitted (stores the submission date)
+  function markStepSubmitted(step) {
+    stepSubmissions.value[step] = new Date()
+  }
+
+  // Get step submission date
+  function getStepSubmissionDate(step) {
+    return stepSubmissions.value[step] || null
+  }
+
+  // Get expected review date (submission date + 4 days)
+  function getExpectedReviewDate(step) {
+    const submissionDate = stepSubmissions.value[step]
+    if (!submissionDate) return null
+    const reviewDate = new Date(submissionDate.getTime() + 4 * 24 * 60 * 60 * 1000)
+    return reviewDate
+  }
+
+  // Check if step is submitted
+  function isStepSubmitted(step) {
+    return stepSubmissions.value[step] !== null
+  }
+
   // Mark step as complete
   function markStepComplete(step) {
     stepCompletion.value[step] = true
+    markStepSubmitted(step)
   }
 
   // Check if step is complete
@@ -128,6 +159,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     answers,
     pageCompletion,
     stepCompletion,
+    stepSubmissions,
     updateAnswer,
     getAnswer,
     calculateBlockProgress,
@@ -135,6 +167,10 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     calculatePageCompletionPercentage,
     markPageComplete,
     markStepComplete,
+    markStepSubmitted,
+    getStepSubmissionDate,
+    getExpectedReviewDate,
+    isStepSubmitted,
     isStepComplete,
     isPageComplete,
     resetStep1

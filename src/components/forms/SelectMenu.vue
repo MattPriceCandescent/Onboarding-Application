@@ -1,6 +1,13 @@
 <template>
   <div class="relative">
-    <label class="block text-gray-800 font-medium mb-2">{{ label }}</label>
+    <label
+      :class="[
+        'block font-medium mb-2',
+        isAnswered ? 'text-answered' : 'text-gray-800'
+      ]"
+    >
+      {{ label }}
+    </label>
     <select
       :value="modelValue"
       @change="$emit('update:modelValue', $event.target.value)"
@@ -35,11 +42,21 @@ defineProps({
   placeholder: {
     type: String,
     default: 'Select'
+  },
+  isAnswered: {
+    type: Boolean,
+    default: false
   }
 })
 
 defineEmits(['update:modelValue'])
 </script>
+
+<style scoped>
+.text-answered {
+  color: #656565;
+}
+</style>
 
 <style scoped>
 select {

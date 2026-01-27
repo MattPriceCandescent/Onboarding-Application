@@ -1,5 +1,12 @@
 <template>
-  <div class="fixed bottom-0 left-64 right-80 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-end z-40">
+  <div class="fixed bottom-0 left-64 right-80 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between z-40">
+    <!-- Left side text (only on page 3) -->
+    <div v-if="currentPage === 3" class="text-sm text-gray-500">
+      You'll be able to come back and add to your application after you submit it.
+    </div>
+    <div v-else></div>
+
+    <!-- Right side buttons -->
     <div class="flex items-center gap-4">
       <!-- Save & Exit -->
       <button

@@ -2,7 +2,14 @@
   <div>
     <div class="flex items-center justify-between mb-4">
       <div>
-        <label class="block text-gray-800 font-medium">Text</label>
+        <label
+          :class="[
+            'block font-medium',
+            isAnswered ? 'text-answered' : 'text-gray-800'
+          ]"
+        >
+          {{ label }}
+        </label>
         <p class="text-sm text-gray-600 mt-1">{{ description }}</p>
       </div>
       <div class="flex items-center gap-4">
@@ -106,6 +113,10 @@ const props = defineProps({
   explanation: {
     type: String,
     default: ''
+  },
+  isAnswered: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -176,3 +187,9 @@ const formatFileSize = (bytes) => {
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
 }
 </script>
+
+<style scoped>
+.text-answered {
+  color: #656565;
+}
+</style>

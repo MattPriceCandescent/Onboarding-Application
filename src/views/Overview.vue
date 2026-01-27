@@ -15,30 +15,42 @@
               :step="1"
               title="Step 1: Sandbox access"
               description="Get access to the development sandbox environment to begin testing your integration."
-              :is-active="true"
+              :is-active="!isStep1Submitted"
+              :is-submitted="isStep1Submitted"
+              :expected-review-date="step1ReviewDate"
+              success-message="Sandbox access is on the way!"
               :support-comments="0"
               review-time="1 week review time"
               @start="handleStartStep1"
+              @review="handleReviewStep1"
             />
 
             <StepCard
               :step="2"
               title="Step 2: Security & compliance"
               subtitle="[Company wide questions and documents]"
-              :is-active="isStep1Complete"
+              :is-active="false"
+              :is-submitted="isStep2Submitted"
+              :expected-review-date="step2ReviewDate"
+              success-message="Security & compliance review is in progress!"
               :support-comments="0"
               review-time="3 - 4 week review time"
               @start="handleStartStep2"
+              @review="handleReviewStep2"
             />
 
             <StepCard
               :step="3"
               title="Step 3: Product information"
               description="Submit your marketplace listing details to showcase your solution to customers."
-              :is-active="isStep1Complete"
+              :is-active="false"
+              :is-submitted="isStep3Submitted"
+              :expected-review-date="step3ReviewDate"
+              success-message="Product information review is in progress!"
               :support-comments="0"
               review-time="3 - 4 week review time"
               @start="handleStartStep3"
+              @review="handleReviewStep3"
             />
           </div>
         </div>
@@ -59,6 +71,37 @@ const router = useRouter()
 const store = useOnboardingStore()
 
 const isStep1Complete = computed(() => store.isStepComplete('step1'))
+const isStep2Complete = computed(() => store.isStepComplete('step2'))
+const isStep3Complete = computed(() => store.isStepComplete('step3'))
+
+const isStep1Submitted = computed(() => store.isStepSubmitted('step1'))
+const isStep2Submitted = computed(() => store.isStepSubmitted('step2'))
+const isStep3Submitted = computed(() => store.isStepSubmitted('step3'))
+
+// Format date as "MMM DD, YYYY" (e.g., "Nov 21, 2025")
+const formatDate = (date) => {
+  if (!date) return ''
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  })
+}
+
+const step1ReviewDate = computed(() => {
+  const reviewDate = store.getExpectedReviewDate('step1')
+  return reviewDate ? formatDate(reviewDate) : ''
+})
+
+const step2ReviewDate = computed(() => {
+  const reviewDate = store.getExpectedReviewDate('step2')
+  return reviewDate ? formatDate(reviewDate) : ''
+})
+
+const step3ReviewDate = computed(() => {
+  const reviewDate = store.getExpectedReviewDate('step3')
+  return reviewDate ? formatDate(reviewDate) : ''
+})
 
 const handleStartStep1 = () => {
   router.push('/step1/page1')
@@ -76,5 +119,20 @@ const handleStartStep3 = () => {
     // Navigate to Step 3 when implemented
     console.log('Step 3 not yet implemented')
   }
+}
+
+const handleReviewStep1 = () => {
+  // Navigate to Step 1, page 1 to review submission
+  router.push('/step1/page1')
+}
+
+const handleReviewStep2 = () => {
+  // Navigate to review page or show details
+  console.log('Review Step 2')
+}
+
+const handleReviewStep3 = () => {
+  // Navigate to review page or show details
+  console.log('Review Step 3')
 }
 </script>

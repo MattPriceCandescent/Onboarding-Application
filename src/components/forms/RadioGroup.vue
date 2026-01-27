@@ -1,13 +1,20 @@
 <template>
   <div class="flex items-center justify-between">
-    <label class="text-gray-800 font-medium flex-1">{{ label }}</label>
+    <label
+      :class="[
+        'font-medium flex-1 mr-3',
+        isAnswered ? 'text-answered' : 'text-gray-800'
+      ]"
+    >
+      {{ label }}
+    </label>
     <div class="flex items-center gap-4">
       <label
         v-for="option in options"
         :key="option"
         :class="[
           'flex items-center gap-2 cursor-pointer',
-          modelValue === option ? 'text-blue-600' : 'text-gray-600'
+          modelValue === option ? 'text-blue-600' : isAnswered ? 'text-answered' : 'text-gray-600'
         ]"
       >
         <input
@@ -41,8 +48,18 @@ defineProps({
   name: {
     type: String,
     required: true
+  },
+  isAnswered: {
+    type: Boolean,
+    default: false
   }
 })
 
 defineEmits(['update:modelValue'])
 </script>
+
+<style scoped>
+.text-answered {
+  color: #656565;
+}
+</style>

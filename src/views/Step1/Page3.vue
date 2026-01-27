@@ -12,17 +12,27 @@
             v-for="block in pageData.formBlocks"
             :key="block.id"
             :title="block.title"
+            :block-id="block.id"
+            step="step1"
+            page="page3"
+            :questions="block.questions"
           >
-            <FileUpload
-              v-for="question in block.questions"
+            <QuestionRow
+              v-for="(question, index) in block.questions"
               :key="question.id"
-              :label="question.label"
-              :description="question.description"
-              :model-value="getFile(block.id, question.id)"
-              :explanation="getExplanation(block.id, question.id)"
-              @update:model-value="updateFile(block.id, question.id, $event)"
-              @update:explanation="updateExplanation(block.id, question.id, $event)"
-            />
+              :is-answered="isQuestionAnswered(block.id, question.id)"
+              :show-separator="index < block.questions.length - 1"
+            >
+              <FileUpload
+                :label="question.label"
+                :description="question.description"
+                :model-value="getFile(block.id, question.id)"
+                :explanation="getExplanation(block.id, question.id)"
+                :is-answered="isQuestionAnswered(block.id, question.id)"
+                @update:model-value="updateFile(block.id, question.id, $event)"
+                @update:explanation="updateExplanation(block.id, question.id, $event)"
+              />
+            </QuestionRow>
           </FormBlock>
         </div>
       </main>
@@ -41,6 +51,7 @@ import LeftNav from '../../components/layout/LeftNav.vue'
 import ProgressIndicator from '../../components/layout/ProgressIndicator.vue'
 import PageNavigation from '../../components/layout/PageNavigation.vue'
 import FormBlock from '../../components/forms/FormBlock.vue'
+import QuestionRow from '../../components/forms/QuestionRow.vue'
 import FileUpload from '../../components/forms/FileUpload.vue'
 
 const store = useOnboardingStore()
@@ -71,5 +82,18 @@ const updateExplanation = (blockId, questionId, explanation) => {
     ...currentAnswer,
     explanation
   })
+}
+
+const isQuestionAnswered = (blockId, questionId) => {
+  const answer = store.getAnswer('step1', 'page3', blockId, questionId)
+  
+  if (!answer) return false
+  
+  // For file uploads, check if file or explanation exists
+  if (typeof answer === 'object' && answer !== null) {
+    return answer.file || answer.explanation
+  }
+  
+  return true
 }
 </script>

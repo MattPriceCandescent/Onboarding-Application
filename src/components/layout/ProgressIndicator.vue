@@ -128,7 +128,7 @@ const pages = computed(() => {
     
     return {
       id: pageId,
-      title: `${index + 1} ${pageData ? pageData.title : ''}`,
+      title: pageData ? pageData.title : '',
       isActive,
       completionPercentage,
       blocks
