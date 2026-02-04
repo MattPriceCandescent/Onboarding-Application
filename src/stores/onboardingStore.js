@@ -50,13 +50,34 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     return answers.value[step]?.[page]?.[blockId]?.[questionId] ?? null
   }
 
-  // Calculate progress for a form block
+  // Check if an answer value counts as "answered" (matches page completion logic for file uploads, etc.)
+  function isAnswerFilled(answer) {
+    if (answer === null || answer === undefined || answer === '') return false
+    if (typeof answer === 'object' && answer !== null) {
+      if (answer.file || answer.explanation) return true
+      return Object.keys(answer).length > 0
+    }
+    return true
+  }
+
+  // Get block progress as { answered, total } based on the block's questions (from formData).
+  // Use this so progress stays correct when questions are added/removed.
+  function getBlockProgressCounts(step, page, blockId, questions) {
+    const total = Array.isArray(questions) ? questions.length : 0
+    if (total === 0) return { answered: 0, total: 0 }
+    let answered = 0
+    for (const q of questions) {
+      const answer = getAnswer(step, page, blockId, q.id)
+      if (isAnswerFilled(answer)) answered += 1
+    }
+    return { answered, total }
+  }
+
+  // Calculate progress for a form block (percentage, for backward compatibility)
   function calculateBlockProgress(step, page, blockId, totalQuestions) {
     if (!answers.value[step]?.[page]?.[blockId]) return 0
     const blockAnswers = answers.value[step][page][blockId]
-    const answeredCount = Object.values(blockAnswers).filter(
-      answer => answer !== null && answer !== undefined && answer !== ''
-    ).length
+    const answeredCount = Object.values(blockAnswers).filter(a => isAnswerFilled(a)).length
     return totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0
   }
 
@@ -162,6 +183,7 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     stepSubmissions,
     updateAnswer,
     getAnswer,
+    getBlockProgressCounts,
     calculateBlockProgress,
     calculatePageProgress,
     calculatePageCompletionPercentage,

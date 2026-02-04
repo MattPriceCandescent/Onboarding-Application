@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed bottom-0 left-64 right-80 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between z-40">
+  <div class="layout-paper fixed bottom-0 left-64 right-80 bg-paper border-t border-border px-6 py-4 flex items-center justify-between z-40">
     <!-- Left side text (only on page 3) -->
-    <div v-if="currentPage === 3" class="text-sm text-gray-500">
+    <div v-if="currentPage === 3" class="text-sm text-text-muted">
       You'll be able to come back and add to your application after you submit it.
     </div>
     <div v-else></div>
@@ -11,7 +11,7 @@
       <!-- Save & Exit -->
       <button
         @click="handleSaveAndExit"
-        class="px-4 py-2 bg-white border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
+        class="px-4 py-2 bg-surface border border-accent text-accent-muted-text rounded-lg hover:bg-accent-muted transition-colors"
       >
         Save and exit
       </button>
@@ -21,10 +21,10 @@
         @click="handlePrevious"
         :disabled="!canGoPrevious"
         :class="[
-          'px-4 py-2 bg-white border rounded-lg transition-colors flex items-center gap-2',
+          'px-4 py-2 bg-surface border rounded-lg transition-colors flex items-center gap-2',
           canGoPrevious
-            ? 'border-blue-300 text-blue-700 hover:bg-blue-50'
-            : 'border-gray-200 text-gray-400 cursor-not-allowed'
+            ? 'border-accent text-accent-muted-text hover:bg-accent-muted'
+            : 'border-border text-text-muted cursor-not-allowed'
         ]"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
       <!-- Primary Button (Continue/Submit) -->
       <button
         @click="handlePrimary"
-        class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2"
+        class="accent-bg px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
       >
         <span>{{ primaryButtonText }}</span>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

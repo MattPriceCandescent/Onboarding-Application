@@ -1,7 +1,9 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-    <div class="flex items-center justify-between px-8 py-4">
-      <div class="flex items-center gap-2">
+  <div class="layout-surface bg-surface rounded-lg border-x border-b border-border mb-6 shadow-[0_2px_4px_0_rgba(0,0,0,0.06)]">
+    <div class="sticky top-16 z-40 flex flex-col bg-page rounded-t-lg -mt-px">
+      <div class="form-block-gap h-4 flex-shrink-0 bg-page rounded-t-lg" aria-hidden="true" />
+      <div class="form-block-header flex items-center justify-between px-8 py-4 layout-surface border-b border-border">
+        <div class="flex items-center gap-2">
         <svg
           v-if="isBlockComplete"
           class="w-5 h-5 text-green-600 flex-shrink-0"
@@ -19,7 +21,7 @@
         <h3
           :class="[
             'text-lg font-bold',
-            isBlockComplete ? 'text-answered' : 'text-gray-800'
+            isBlockComplete ? 'text-answered' : 'text-text-primary'
           ]"
         >
           {{ title }}
@@ -27,7 +29,7 @@
       </div>
       <button
         @click="toggleExpanded"
-        class="flex-shrink-0 text-gray-600 hover:text-gray-800 transition-colors"
+        class="flex-shrink-0 text-text-secondary hover:text-text-primary transition-colors"
         aria-label="Toggle expand/collapse"
       >
         <svg
@@ -59,8 +61,9 @@
           />
         </svg>
       </button>
+      </div>
     </div>
-    <div v-if="isExpanded" class="border-t border-gray-200 mb-6">
+    <div v-if="isExpanded" class="border-t border-border mb-6">
       <div>
         <slot />
       </div>
@@ -125,7 +128,16 @@ const isBlockComplete = computed(() => {
 </script>
 
 <style scoped>
-.text-answered {
-  color: #656565;
+.form-block-gap {
+  background-color: var(--color-bg-page);
+  position: relative;
+  z-index: 1;
+}
+.form-block-header {
+  background-color: var(--color-bg-surface);
+  min-height: 3.75rem;
+  position: relative;
+  z-index: 1;
 }
 </style>
+
