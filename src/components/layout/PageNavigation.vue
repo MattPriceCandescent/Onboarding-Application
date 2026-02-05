@@ -11,7 +11,7 @@
       <!-- Save & Exit -->
       <button
         @click="handleSaveAndExit"
-        class="px-4 py-2 bg-surface border border-accent text-accent-muted-text rounded-lg hover:bg-accent-muted transition-colors"
+        class="btn-secondary-outline px-4 py-2 bg-surface border rounded-lg hover:bg-accent-muted transition-colors"
       >
         Save and exit
       </button>
@@ -23,8 +23,8 @@
         :class="[
           'px-4 py-2 bg-surface border rounded-lg transition-colors flex items-center gap-2',
           canGoPrevious
-            ? 'border-accent text-accent-muted-text hover:bg-accent-muted'
-            : 'border-border text-text-muted cursor-not-allowed'
+            ? 'btn-secondary-outline hover:bg-accent-muted'
+            : 'btn-secondary-outline-disabled'
         ]"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
       <!-- Primary Button (Continue/Submit) -->
       <button
         @click="handlePrimary"
-        class="accent-bg px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
+        class="accent-bg text-inverse px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
       >
         <span>{{ primaryButtonText }}</span>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -62,7 +62,7 @@
         <button
           v-if="isSubmitted"
           @click="$emit('review')"
-          class="accent-bg px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
+          class="accent-bg text-inverse px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
         >
           Review submission
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
         <button
           v-else-if="isActive"
           @click="$emit('start')"
-          class="accent-bg px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
+          class="accent-bg text-inverse px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
         >
           Get started
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

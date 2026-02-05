@@ -25,7 +25,7 @@
         <button
           v-if="!dontHaveFile && !uploadedFile"
           @click="triggerFileInput"
-          class="accent-bg px-4 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors"
+          class="accent-bg text-inverse px-4 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors"
         >
           Upload File
         </button>

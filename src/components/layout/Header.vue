@@ -4,7 +4,7 @@
       <!-- Logo and Brand -->
       <div class="flex items-center gap-2">
         <div class="accent-bg w-8 h-8 bg-accent rounded flex items-center justify-center">
-          <span class="text-text-inverse font-bold text-sm">c</span>
+          <span class="text-inverse text-text-inverse font-bold text-sm">c</span>
         </div>
         <span class="text-text-primary font-semibold text-lg">candescent</span>
         <span class="bg-muted text-text-secondary text-xs px-2 py-0.5 rounded-full">DEV</span>

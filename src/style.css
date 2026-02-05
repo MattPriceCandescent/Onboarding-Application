@@ -26,7 +26,7 @@
   --color-accent-muted-text: #14427C;
   /* Special */
   --color-input-bg: #FAFAFA;
-  --color-progress-bg: #E0E0E0;
+  --color-progress-bg: #D1D5DB;       /* track/inactive circles - visible on paper */
   --color-progress-fill: #1A6CDA;
 }
 
@@ -120,10 +120,55 @@ main.layout-page {
   color: var(--color-accent);
 }
 
+.accent-border {
+  border-color: var(--color-accent);
+}
+
+/* Secondary outline button: blue text + blue border everywhere */
+.btn-secondary-outline {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn-secondary-outline svg {
+  color: inherit;
+}
+
+/* Disabled secondary outline (e.g. Previous on first page) */
+.btn-secondary-outline-disabled {
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+}
+
+.btn-secondary-outline-disabled svg {
+  color: inherit;
+}
+
 .accent-fill {
   background-color: var(--color-progress-fill);
 }
 
 .accent-muted-bg {
   background-color: var(--color-accent-muted);
+}
+
+/* Primary buttons: always white text in light mode, dark text in dark mode */
+.text-inverse {
+  color: var(--color-text-inverse);
+}
+
+/* Progress component: visible track and step circles */
+.progress-track {
+  background-color: var(--color-progress-bg);
+}
+
+.progress-step-inactive {
+  background-color: var(--color-progress-bg);
+}
+
+/* Active step circle: number must contrast on primary fill */
+.progress-step-active,
+.progress-step-active span {
+  color: var(--color-text-inverse);
 }

@@ -6,7 +6,7 @@
       <!-- Page-level Progress with nested form blocks -->
       <div class="relative">
         <!-- Connecting line -->
-        <div class="absolute left-4 top-8 bottom-0 w-0.5 bg-progress-bg"></div>
+        <div class="progress-track absolute left-4 top-8 bottom-0 w-0.5 bg-progress-bg"></div>
         
         <div
           v-for="(page, index) in pages"
@@ -24,10 +24,10 @@
               :class="[
                 'relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0',
                 page.isActive 
-                  ? 'accent-bg bg-accent text-text-inverse' 
+                  ? 'progress-step-active accent-bg text-inverse bg-accent text-text-inverse' 
                   : page.completionPercentage === 100 
-                    ? 'bg-muted' 
-                    : 'bg-muted text-text-muted'
+                    ? 'progress-step-inactive bg-progress-bg' 
+                    : 'progress-step-inactive bg-progress-bg text-text-muted'
               ]"
             >
               <!-- Checkmark for 100% complete pages -->
@@ -66,9 +66,9 @@
                 <span class="text-xs text-text-muted">{{ block.answered }}/{{ block.total }}</span>
               </div>
               <!-- Progress bar -->
-              <div class="w-full bg-progress-bg rounded-full h-1">
+              <div class="progress-track w-full bg-progress-bg rounded-full h-1.5">
                 <div
-                  class="accent-fill bg-progress-fill h-1 rounded-full transition-all duration-300"
+                  class="accent-fill bg-progress-fill h-1.5 rounded-full transition-all duration-300"
                   :style="{ width: `${block.percentage}%` }"
                 ></div>
               </div>
@@ -79,7 +79,7 @@
 
       <!-- Floating Action Button -->
       <div class="fixed bottom-6 right-6">
-        <button class="accent-bg w-12 h-12 bg-accent text-text-inverse rounded-full shadow-lg hover:bg-accent-hover transition-colors flex items-center justify-center">
+        <button class="accent-bg text-inverse w-12 h-12 bg-accent text-text-inverse rounded-full shadow-lg hover:bg-accent-hover transition-colors flex items-center justify-center">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
