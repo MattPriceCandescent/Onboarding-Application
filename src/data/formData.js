@@ -1171,60 +1171,6 @@ export const formData = {
   },
   step3: {
     page1: {
-      title: "Product documentation",
-      subtitle: "Complete this section to continue.",
-      formBlocks: [
-        {
-          id: "security-documentation",
-          title: "Security documentation",
-          questions: [
-            {
-              id: "q1",
-              type: "file",
-              label: "SOC 1/SOC2",
-              description: "Please upload the file specific to this product"
-            },
-            {
-              id: "q2",
-              type: "file",
-              label: "Pen test results and management",
-              description: "Please upload the file specific to this product"
-            },
-            {
-              id: "q3",
-              type: "file",
-              label: "Vulnerability test results",
-              description: "Please upload the file specific to this product"
-            },
-            {
-              id: "q4",
-              type: "file",
-              label: "BCP/DR and most recent BCP/DR test results",
-              description: "Please upload the file specific to this product"
-            }
-          ]
-        },
-        {
-          id: "technical-documentation",
-          title: "Technical documentation",
-          questions: [
-            {
-              id: "q1",
-              type: "file",
-              label: "Upload Workflow file",
-              description: "Description"
-            },
-            {
-              id: "q2",
-              type: "file",
-              label: "Use cases",
-              description: "Description"
-            }
-          ]
-        }
-      ]
-    },
-    page2: {
       title: "Product overview",
       subtitle: "Complete this section to continue.",
       formBlocks: [
@@ -1241,6 +1187,30 @@ export const formData = {
             { id: "q7", type: "select", label: "What candescent solution are you looking to integrate with", options: ["Candescent Core", "Candescent Connect", "Other"], placeholder: "Select" },
             { id: "q8", type: "radio", label: "Does your solution require access to or send PII?", options: ["Yes", "No"] },
             { id: "q9", type: "radio", label: "Will you be email or communicating directly to an end user on behalf of the FI?", options: ["Yes", "No"] }
+          ]
+        }
+      ]
+    },
+    page2: {
+      title: "Technical documentation",
+      subtitle: "Complete this section to continue.",
+      formBlocks: [
+        {
+          id: "technical-documentation",
+          title: "Files to upload",
+          questions: [
+            {
+              id: "q1",
+              type: "file",
+              label: "Upload Workflow file",
+              description: "Description"
+            },
+            {
+              id: "q2",
+              type: "file",
+              label: "Use cases",
+              description: "Description"
+            }
           ]
         }
       ]
