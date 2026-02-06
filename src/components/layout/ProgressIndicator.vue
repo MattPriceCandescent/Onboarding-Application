@@ -5,8 +5,8 @@
 
       <!-- Page-level Progress with nested form blocks (current step only) -->
       <div v-if="currentStepConfig" class="relative">
-        <!-- Connecting line -->
-        <div class="progress-track absolute left-4 top-8 bottom-0 w-0.5 bg-progress-bg"></div>
+        <!-- Connecting line (z-0 so it stays behind step circles) -->
+        <div class="progress-track absolute left-4 top-8 bottom-0 w-0.5 bg-progress-bg z-0"></div>
 
         <div
           v-for="(page, index) in pages"
@@ -20,29 +20,29 @@
               page.isActive ? 'accent-text text-accent font-bold' : page.completionPercentage === 100 ? 'text-text-secondary' : 'text-text-muted'
             ]"
           >
-            <div
-              :class="[
-                'relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0',
-                page.isActive
-                  ? 'progress-step-active accent-bg text-inverse bg-accent text-text-inverse'
-                  : page.completionPercentage === 100
-                    ? 'progress-step-inactive bg-progress-bg'
-                    : 'progress-step-inactive bg-progress-bg text-text-muted'
-              ]"
+            <StepProgressCircle
+              :percentage="page.completionPercentage"
+              :is-active="page.isActive"
+              class="relative z-10"
             >
-              <!-- Checkmark for 100% complete pages -->
+              <!-- Checkmark: blue when active, gray when inactive (completed but not viewed) -->
               <svg
-                v-if="page.completionPercentage === 100 && !page.isActive"
-                class="accent-text w-5 h-5 text-accent"
+                v-if="page.circleState.isComplete"
+                class="w-5 h-5 flex-shrink-0"
+                :class="page.isActive ? 'accent-text text-accent' : 'text-text-secondary'"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
-              <!-- Number for active or incomplete pages -->
-              <span v-else>{{ index + 1 }}</span>
-            </div>
+              <!-- Number when not complete: primary on inner circle when active, secondary when inactive -->
+              <span
+                v-else
+                class="text-sm font-semibold"
+                :class="page.isActive ? 'accent-text text-accent' : 'text-text-secondary'"
+              >{{ index + 1 }}</span>
+            </StepProgressCircle>
             <button
               @click="handlePageClick(page.id)"
               :class="[
@@ -97,6 +97,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useOnboardingStore } from '../../stores/onboardingStore'
 import { formData } from '../../data/formData'
 import { getStepById, onboardingSteps } from '../../data/onboardingConfig'
+import { getStepCircleState } from '../../composables/useStepCircleState'
+import StepProgressCircle from './StepProgressCircle.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -153,11 +155,14 @@ const pages = computed(() => {
       }
     }
 
+    const circleState = getStepCircleState(isActive, completionPercentage)
+
     return {
       id: pid,
       title: pageData ? pageData.title : '',
       isActive,
       completionPercentage,
+      circleState,
       blocks
     }
   })
