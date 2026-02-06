@@ -4,7 +4,7 @@
  */
 
 export const onboardingSteps = [
-  { id: 'step1', title: 'Step 1: Sandbox access', pageIds: ['page1'] },
+  { id: 'step1', title: 'Step 1: Get access to the sandbox', pageIds: ['page1'] },
   { id: 'step2', title: 'Step 2: Security & compliance', pageIds: ['page1', 'page2', 'page3', 'page4', 'page5'] },
   { id: 'step3', title: 'Step 3: Product information', pageIds: ['page1', 'page2', 'page3', 'page4'] }
 ]

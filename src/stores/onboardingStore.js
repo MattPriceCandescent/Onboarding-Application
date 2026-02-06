@@ -35,6 +35,33 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     step3: null
   })
 
+  // Dynamic form block IDs (e.g. step2.page5 = list of 4th party vendor block ids)
+  const dynamicBlockIds = ref({})
+
+  function getDynamicBlockIds(step, page) {
+    return dynamicBlockIds.value[step]?.[page] ?? []
+  }
+
+  function addDynamicBlock(step, page) {
+    if (!dynamicBlockIds.value[step]) dynamicBlockIds.value[step] = {}
+    if (!dynamicBlockIds.value[step][page]) dynamicBlockIds.value[step][page] = []
+    const id = `4th-party-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+    dynamicBlockIds.value[step][page] = [...dynamicBlockIds.value[step][page], id]
+    return id
+  }
+
+  function removeDynamicBlock(step, page, blockId) {
+    const list = dynamicBlockIds.value[step]?.[page]
+    if (!list) return
+    dynamicBlockIds.value[step][page] = list.filter(id => id !== blockId)
+    // Clear answers for this block
+    if (answers.value[step]?.[page]?.[blockId]) {
+      const next = { ...answers.value[step][page] }
+      delete next[blockId]
+      answers.value[step][page] = next
+    }
+  }
+
   // Initialize answers structure
   function initializeAnswers(step, page, blockId, questionId) {
     if (!answers.value[step]) answers.value[step] = {}
@@ -59,6 +86,19 @@ export const useOnboardingStore = defineStore('onboarding', () => {
   // Check if an answer value counts as "answered" (matches page completion logic for file uploads, etc.)
   function isAnswerFilled(answer) {
     if (answer === null || answer === undefined || answer === '') return false
+    // agreementSignature: simulated signature (boolean or { signed: true })
+    if (answer === true || (typeof answer === 'object' && answer !== null && answer.signed === true)) return true
+    if (Array.isArray(answer)) {
+      if (answer.length === 0) return false
+      // mediaGallery: at least one item with file or youtube url
+      const hasMedia = answer.some(item => item && (item.file || (item.type === 'youtube' && item.url)))
+      if (hasMedia) return true
+      // linkList: at least one link with title or url
+      const hasLink = answer.some(link => link && (String(link.title || '').trim() || String(link.url || '').trim()))
+      if (hasLink) return true
+      // tagPicker: any selected
+      return answer.length > 0
+    }
     if (typeof answer === 'object' && answer !== null) {
       if (answer.file || answer.explanation) return true
       if (answer.value !== undefined) {
@@ -98,7 +138,8 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     return totalBlocks > 0 ? Math.round((blocksWithAnswers / totalBlocks) * 100) : 0
   }
 
-  // Calculate page completion percentage based on all questions answered
+  // Calculate page completion percentage based on all questions answered.
+  // For pages with dynamicFormBlocks, uses dynamic block ids + template questions.
   function calculatePageCompletionPercentage(step, page) {
     const pageData = formData[step]?.[page]
     if (!pageData) return 0
@@ -106,9 +147,16 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     let totalQuestions = 0
     let answeredQuestions = 0
 
-    pageData.formBlocks.forEach(block => {
+    const blocks = pageData.dynamicFormBlocks
+      ? getDynamicBlockIds(step, page).map(id => ({
+          id,
+          questions: pageData.vendorBlockTemplate?.questions ?? []
+        }))
+      : (pageData.formBlocks ?? [])
+
+    blocks.forEach(block => {
       const blockAnswers = answers.value[step]?.[page]?.[block.id] || {}
-      const blockTotal = block.questions.length
+      const blockTotal = Array.isArray(block.questions) ? block.questions.length : 0
       totalQuestions += blockTotal
 
       const answered = Object.values(blockAnswers).filter(isAnswerFilled).length
@@ -168,6 +216,9 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     if (answers.value[stepId]) {
       answers.value[stepId] = {}
     }
+    if (dynamicBlockIds.value[stepId]) {
+      dynamicBlockIds.value[stepId] = {}
+    }
     const stepConfig = onboardingSteps.find(s => s.id === stepId)
     if (stepConfig) {
       pageCompletion.value[stepId] = {}
@@ -188,6 +239,10 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     pageCompletion,
     stepCompletion,
     stepSubmissions,
+    dynamicBlockIds,
+    getDynamicBlockIds,
+    addDynamicBlock,
+    removeDynamicBlock,
     updateAnswer,
     getAnswer,
     isAnswerFilled,

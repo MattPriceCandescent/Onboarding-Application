@@ -1143,9 +1143,30 @@ export const formData = {
     page5: {
       title: "4th party vendors",
       subtitle: "Complete this section to continue.",
-      formBlocks: [
-        { id: "4th-party-a", title: "4th party A", questions: [] }
-      ]
+      dynamicFormBlocks: true,
+      addVendorCard: {
+        heading: "Add 4th parties listing",
+        description: "Please list all the 4th parties you will use to support your services.",
+        buttonLabel: "Add listing"
+      },
+      vendorBlockTemplate: {
+        questions: [
+          { id: "q1", type: "text", label: "4th party name" },
+          { id: "q2", type: "textarea", label: "Brief description of the services/product provided by the 4th party" },
+          { id: "q3", type: "text", label: "4th party vendor URL" },
+          { id: "q4", type: "select", label: "Primary location from where services are delivered", options: ["Onshore (same country)", "Nearshore", "Offshore", "Other"], placeholder: "Select" },
+          { id: "q5", type: "select", label: "Criticality of the services to your business", options: ["Critical", "High", "Medium", "Low", "Other"], placeholder: "Select" },
+          { id: "q6", type: "radio", label: "Is any Candescent client end user Personal Information or Candescent Confidential Information shared with the 4th party vendor?", options: ["Yes", "No"] },
+          { id: "q7", type: "textarea", label: "If so, please provide a list of the data shared." },
+          { id: "q8", type: "textarea", label: "If so, does the vendor share this information with any Nth parties? If so, please list the Nth party vendors." },
+          { id: "q9", type: "radio", label: "Will this vendor be dealing with any Candescent financial institutions or financial institution customers directly?", options: ["Yes", "No"] },
+          { id: "q10", type: "radio", label: "Have you completed security and confidentiality due diligence on this vendor in the previous 12 months?", options: ["Yes", "No"] },
+          { id: "q11", type: "textarea", label: "Were there any noteworthy discoveries, and if so, what were they, and how were they addressed?" },
+          { id: "q12", type: "radio", label: "Do you have a contract with this vendor right now?", options: ["Yes", "No"] },
+          { id: "q13", type: "radio", label: "Will any of the vendor services be performed in another country?", options: ["Yes", "No"] }
+        ]
+      },
+      formBlocks: []
     }
   },
   step3: {
@@ -1153,30 +1174,150 @@ export const formData = {
       title: "Product documentation",
       subtitle: "Complete this section to continue.",
       formBlocks: [
-        { id: "security-documentation", title: "Security documentation", questions: [] },
-        { id: "technical-documentation", title: "Technical documentation", questions: [] }
+        {
+          id: "security-documentation",
+          title: "Security documentation",
+          questions: [
+            {
+              id: "q1",
+              type: "file",
+              label: "SOC 1/SOC2",
+              description: "Please upload the file specific to this product"
+            },
+            {
+              id: "q2",
+              type: "file",
+              label: "Pen test results and management",
+              description: "Please upload the file specific to this product"
+            },
+            {
+              id: "q3",
+              type: "file",
+              label: "Vulnerability test results",
+              description: "Please upload the file specific to this product"
+            },
+            {
+              id: "q4",
+              type: "file",
+              label: "BCP/DR and most recent BCP/DR test results",
+              description: "Please upload the file specific to this product"
+            }
+          ]
+        },
+        {
+          id: "technical-documentation",
+          title: "Technical documentation",
+          questions: [
+            {
+              id: "q1",
+              type: "file",
+              label: "Upload Workflow file",
+              description: "Description"
+            },
+            {
+              id: "q2",
+              type: "file",
+              label: "Use cases",
+              description: "Description"
+            }
+          ]
+        }
       ]
     },
     page2: {
       title: "Product overview",
       subtitle: "Complete this section to continue.",
       formBlocks: [
-        { id: "product-overview", title: "Product overview", questions: [] }
+        {
+          id: "product-overview",
+          title: "Product overview",
+          questions: [
+            { id: "q1", type: "radio", label: "Does the solution utilize or redundant data center spanning different regions?", options: ["Yes", "No"] },
+            { id: "q2", type: "textarea", label: "Your application description" },
+            { id: "q3", type: "select", label: "What target segment of financial institutions (FIs) are you targeting with your solution?", options: ["Banks", "Credit unions", "Community banks", "All of the above", "Other"], placeholder: "Select" },
+            { id: "q4", type: "date", label: "Tentative development start date", placeholder: "MM/DD/YYYY" },
+            { id: "q5", type: "date", label: "Tentative development end date", placeholder: "MM/DD/YYYY" },
+            { id: "q6", type: "select", label: "What type of integration are you expecting to use?", options: ["API", "File transfer", "Batch", "Real-time", "Other"], placeholder: "Select" },
+            { id: "q7", type: "select", label: "What candescent solution are you looking to integrate with", options: ["Candescent Core", "Candescent Connect", "Other"], placeholder: "Select" },
+            { id: "q8", type: "radio", label: "Does your solution require access to or send PII?", options: ["Yes", "No"] },
+            { id: "q9", type: "radio", label: "Will you be email or communicating directly to an end user on behalf of the FI?", options: ["Yes", "No"] }
+          ]
+        }
       ]
     },
     page3: {
       title: "Public storefront",
       subtitle: "Complete this section to continue.",
       formBlocks: [
-        { id: "product-page", title: "Product page", questions: [] },
-        { id: "company-page", title: "Company page", questions: [] }
+        {
+          id: "product-page",
+          title: "Product page",
+          headerAction: { label: "Preview published page" },
+          questions: [
+            {
+              id: "featured-media",
+              type: "mediaGallery",
+              label: "Featured images",
+              description: "Upload images, videos, or add YouTube links. Drag to reorder. The first item is the featured hero."
+            },
+            { id: "product-features", type: "textarea", label: "Product Features", placeholder: "" },
+            { id: "product-benefits", type: "textarea", label: "Product Benefits", placeholder: "" },
+            { id: "company-info", type: "textarea", label: "Company Info", placeholder: "" },
+            { id: "support-links", type: "linkList", label: "Support links" },
+            {
+              id: "supported-languages",
+              type: "select",
+              label: "Supported Languages",
+              options: ["English", "Spanish", "French", "German", "Other"],
+              placeholder: "Select"
+            }
+          ]
+        },
+        {
+          id: "company-page",
+          title: "Company page",
+          headerAction: { label: "Preview published page" },
+          questions: [
+            { id: "company-name", type: "text", label: "Company name", placeholder: "" },
+            { id: "company-website", type: "text", label: "Company website", placeholder: "https://" },
+            { id: "company-logo", type: "file", label: "Company logo", description: "Recommended size and format." },
+            {
+              id: "tags",
+              type: "tagPicker",
+              label: "Tags",
+              options: [
+                "Financial Wellness",
+                "Family Banking",
+                "Financial Education",
+                "Retirement Planning",
+                "Budgeting Tools",
+                "Savings",
+                "Investments",
+                "Lending",
+                "Payments"
+              ]
+            }
+          ]
+        }
       ]
     },
     page4: {
       title: "Integration agreement",
       subtitle: "Complete this section to continue.",
       formBlocks: [
-        { id: "agreement", title: "Agreement", questions: [] }
+        {
+          id: "agreement",
+          title: "Agreement",
+          questions: [
+            {
+              id: "agreement-signed",
+              type: "agreementSignature",
+              label: "Sign the agreement",
+              pdfUrl: `${(import.meta.env?.BASE_URL || '/').replace(/\/$/, '')}/examplePDF.pdf`,
+              signaturePage: 1
+            }
+          ]
+        }
       ]
     }
   }

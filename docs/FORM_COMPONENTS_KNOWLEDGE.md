@@ -16,6 +16,9 @@ Form blocks are defined in `src/data/formData.js`. Each question has a `type` th
 | **select** | `SelectMenu.vue` | Row (label left, dropdown right); "Other" follow-up input below when shown | Single choice from a list; supports "Other" with follow-up text |
 | **date** | `DateInput.vue` | Row (label left, date input + icon right) | Date; stored as YYYY-MM-DD |
 | **file** | `FileUpload.vue` | Stacked (label/description, checkbox, button, file card or explanation) | File upload with optional "I don't have this file" + explanation |
+| **mediaGallery** | `FeaturedMedia.vue` | Stacked (label, description, grid of media slots, upload area, YouTube URL) | Featured hero + up to 8 images/videos or YouTube links; value is array of `{ type, file?, url?, preview? }` |
+| **linkList** | `SupportLinks.vue` | Stacked (label, repeatable title+URL rows, "Add another" button) | Dynamic list of support links; value is array of `{ title, url }` |
+| **tagPicker** | `TagPicker.vue` | Stacked (label, pill buttons for options) | Multi-select tags; value is array of selected option strings; requires `options` |
 
 **Fallback:** Any unknown `type` is rendered with `TextArea`.
 
@@ -35,6 +38,9 @@ Each question in a block’s `questions` array must have at least `id`, `type`, 
 | select | `id`, `type`, `label` | `options`, `placeholder` (default "Select"). If `options` includes `"Other"`, a follow-up text field is shown when user selects Other. |
 | date | `id`, `type`, `label` | `placeholder` (default "MM/DD/YYYY"; native date input may not show it) |
 | file | `id`, `type`, `label` | `description` |
+| mediaGallery | `id`, `type`, `label` | `description` |
+| linkList | `id`, `type`, `label` | — |
+| tagPicker | `id`, `type`, `label` | `options` (array of tag strings) |
 
 **Example:**
 

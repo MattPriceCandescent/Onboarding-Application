@@ -1,7 +1,7 @@
 <template>
   <aside class="layout-paper fixed right-0 top-16 bottom-0 w-80 bg-paper border-l border-border overflow-y-auto">
     <div class="p-6 pb-24">
-      <h2 class="text-lg font-bold text-text-primary mb-6">Your progress</h2>
+      <h2 class="text-base font-bold text-text-primary mb-6">{{ progressHeading }}</h2>
 
       <!-- Page-level Progress with nested form blocks (current step only) -->
       <div v-if="currentStepConfig" class="relative">
@@ -60,7 +60,7 @@
               v-for="block in page.blocks"
               :key="block.id"
               type="button"
-              class="mb-3 w-full text-left rounded cursor-pointer hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-paper"
+              class="mb-3 w-full text-left rounded cursor-pointer hover:opacity-80 transition-opacity focus:outline-none"
               @click="handleBlockClick(block, page.id)"
             >
               <div class="flex items-center justify-between mb-1">
@@ -96,7 +96,7 @@ import { computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOnboardingStore } from '../../stores/onboardingStore'
 import { formData } from '../../data/formData'
-import { getStepById } from '../../data/onboardingConfig'
+import { getStepById, onboardingSteps } from '../../data/onboardingConfig'
 
 const route = useRoute()
 const router = useRouter()
@@ -107,6 +107,15 @@ const pageId = computed(() => route.params.pageId || '')
 
 const currentStepConfig = computed(() => getStepById(stepId.value))
 
+const progressHeading = computed(() => {
+  const config = currentStepConfig.value
+  if (!config) return 'Your progress'
+  const stepIndex = onboardingSteps.findIndex(s => s.id === config.id)
+  const stepNumber = stepIndex >= 0 ? stepIndex + 1 : 0
+  const label = config.title.replace(/^Step \d+:\s*/i, '').trim()
+  return label ? `${stepNumber}: ${label} progress` : 'Your progress'
+})
+
 const pages = computed(() => {
   const config = currentStepConfig.value
   if (!config) return []
@@ -116,17 +125,33 @@ const pages = computed(() => {
     const isActive = pageId.value === pid
     const completionPercentage = store.calculatePageCompletionPercentage(stepId.value, pid)
 
-    const blocks = pageData ? pageData.formBlocks.map(block => {
-      const { answered, total } = store.getBlockProgressCounts(stepId.value, pid, block.id, block.questions)
-      const percentage = total > 0 ? Math.round((answered / total) * 100) : 0
-      return {
-        id: block.id,
-        title: block.title,
-        answered,
-        total,
-        percentage
+    let blocks = []
+    if (pageData) {
+      if (pageData.dynamicFormBlocks && pageData.vendorBlockTemplate) {
+        const ids = store.getDynamicBlockIds(stepId.value, pid)
+        const questions = pageData.vendorBlockTemplate.questions || []
+        blocks = ids.map((id, index) => {
+          const name = store.getAnswer(stepId.value, pid, id, 'q1')
+          const nameStr = typeof name === 'string' ? name.trim() : ''
+          const title = nameStr ? `${index + 1}. ${nameStr}` : `${index + 1}. 4th party`
+          const { answered, total } = store.getBlockProgressCounts(stepId.value, pid, id, questions)
+          const percentage = total > 0 ? Math.round((answered / total) * 100) : 0
+          return { id, title, answered, total, percentage }
+        })
+      } else {
+        blocks = (pageData.formBlocks || []).map(block => {
+          const { answered, total } = store.getBlockProgressCounts(stepId.value, pid, block.id, block.questions)
+          const percentage = total > 0 ? Math.round((answered / total) * 100) : 0
+          return {
+            id: block.id,
+            title: block.title,
+            answered,
+            total,
+            percentage
+          }
+        })
       }
-    }) : []
+    }
 
     return {
       id: pid,

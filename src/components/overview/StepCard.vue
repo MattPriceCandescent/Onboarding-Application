@@ -1,5 +1,6 @@
 <template>
-  <div class="layout-surface bg-surface rounded-lg shadow-sm border border-border p-6">
+  <div class="layout-surface bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
+    <div class="p-6">
     <div class="flex items-start justify-between">
       <div class="flex items-start gap-4 flex-1">
         <!-- Icon -->
@@ -62,31 +63,22 @@
         <button
           v-if="isSubmitted"
           @click="$emit('review')"
-          class="accent-bg text-inverse px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
+          class="btn-secondary-outline px-6 py-2 bg-surface border rounded-lg hover:bg-accent-muted transition-colors flex items-center gap-2"
         >
           Review submission
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
         </button>
         <button
           v-else-if="isActive"
           @click="$emit('start')"
           class="accent-bg text-inverse px-6 py-2 bg-accent text-text-inverse rounded-lg hover:bg-accent-hover transition-colors flex items-center gap-2"
         >
-          Get started
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
+          {{ step === 1 ? 'Start' : 'Open' }}
         </button>
         <button
           v-else
           disabled
           class="px-6 py-2 bg-muted text-text-muted rounded-lg cursor-not-allowed flex items-center gap-2"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
           Locked
         </button>
         <button class="p-2 text-text-muted hover:text-text-secondary">
@@ -96,9 +88,10 @@
         </button>
       </div>
     </div>
+    </div>
 
-    <!-- Expanded Review Timeline Section (shown when submitted) -->
-    <div v-if="isSubmitted" class="mt-4 pt-4 border-t border-border bg-accent-muted rounded-lg p-4">
+    <!-- Status banner: flush to bottom of card, full width, no surrounding spacing -->
+    <div v-if="isSubmitted" class="border-t border-border bg-accent-muted px-6 py-4 rounded-b-lg">
       <div class="flex items-start gap-3">
         <svg class="w-5 h-5 text-accent flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
