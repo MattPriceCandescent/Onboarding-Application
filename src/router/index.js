@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { isValidStepPage } from '../data/onboardingConfig'
 
 const router = createRouter({
-  history: createWebHistory('/Test1A-Desktop/'),
+  history: createWebHistory('/Onboarding-Application/'),
   routes: [
     {
       path: '/',
