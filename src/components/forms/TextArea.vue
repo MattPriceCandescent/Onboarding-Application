@@ -12,8 +12,8 @@
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       :placeholder="placeholder"
-      rows="4"
-      class="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-vertical"
+      rows="1"
+      class="form-input w-full px-4 py-2 resize-y min-h-[2.5rem] focus:outline-none"
     ></textarea>
   </div>
 </template>

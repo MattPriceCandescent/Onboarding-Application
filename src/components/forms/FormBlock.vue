@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-surface bg-surface rounded-lg border-x border-b border-border mb-6 shadow-[0_2px_4px_0_rgba(0,0,0,0.06)]">
+  <div :id="'block-' + blockId" class="form-block-scroll-target layout-surface bg-surface rounded-lg border-x border-b border-border mb-6 shadow-[0_2px_4px_0_rgba(0,0,0,0.06)]">
     <div class="sticky top-16 z-40 flex flex-col bg-page rounded-t-lg -mt-px">
       <div class="form-block-gap h-4 flex-shrink-0 bg-page rounded-t-lg" aria-hidden="true" />
       <div class="form-block-header flex items-center justify-between px-8 py-4 layout-surface border-b border-border">
@@ -107,27 +107,16 @@ const toggleExpanded = () => {
 
 const isBlockComplete = computed(() => {
   if (!props.questions || props.questions.length === 0) return false
-  
-  return props.questions.every(question => {
-    const answer = store.getAnswer(props.step, props.page, props.blockId, question.id)
-    
-    // Check if answer exists
-    if (answer === null || answer === undefined || answer === '') return false
-    
-    // For file uploads, check if file or explanation exists
-    if (typeof answer === 'object' && answer !== null) {
-      if (question.type === 'file') {
-        return answer.file || answer.explanation
-      }
-      return Object.keys(answer).length > 0
-    }
-    
-    return true
-  })
+  return props.questions.every(question =>
+    store.isAnswerFilled(store.getAnswer(props.step, props.page, props.blockId, question.id))
+  )
 })
 </script>
 
 <style scoped>
+.form-block-scroll-target {
+  scroll-margin-top: 5rem; /* leave room for sticky header when scrolling from progress sidebar */
+}
 .form-block-gap {
   background-color: var(--color-bg-page);
   position: relative;

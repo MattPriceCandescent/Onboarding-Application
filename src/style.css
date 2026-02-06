@@ -74,6 +74,7 @@ input,
 textarea,
 select {
   color: var(--color-text-primary);
+  background-color: var(--color-bg-paper);
 }
 
 /* Native radio/checkbox use design system primary color */
@@ -171,4 +172,16 @@ main.layout-page {
 .progress-step-active,
 .progress-step-active span {
   color: var(--color-text-inverse);
+}
+
+/* Shared form control styling: border, background, focus (for inputs, textareas, selects) */
+.form-input {
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-input-bg);
+}
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+  border-color: var(--color-accent);
 }

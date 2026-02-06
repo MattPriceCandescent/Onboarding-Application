@@ -1,13 +1,13 @@
 <template>
   <aside class="layout-paper fixed right-0 top-16 bottom-0 w-80 bg-paper border-l border-border overflow-y-auto">
-    <div class="p-6">
+    <div class="p-6 pb-24">
       <h2 class="text-lg font-bold text-text-primary mb-6">Your progress</h2>
 
-      <!-- Page-level Progress with nested form blocks -->
-      <div class="relative">
+      <!-- Page-level Progress with nested form blocks (current step only) -->
+      <div v-if="currentStepConfig" class="relative">
         <!-- Connecting line -->
         <div class="progress-track absolute left-4 top-8 bottom-0 w-0.5 bg-progress-bg"></div>
-        
+
         <div
           v-for="(page, index) in pages"
           :key="page.id"
@@ -23,19 +23,19 @@
             <div
               :class="[
                 'relative z-10 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0',
-                page.isActive 
-                  ? 'progress-step-active accent-bg text-inverse bg-accent text-text-inverse' 
-                  : page.completionPercentage === 100 
-                    ? 'progress-step-inactive bg-progress-bg' 
+                page.isActive
+                  ? 'progress-step-active accent-bg text-inverse bg-accent text-text-inverse'
+                  : page.completionPercentage === 100
+                    ? 'progress-step-inactive bg-progress-bg'
                     : 'progress-step-inactive bg-progress-bg text-text-muted'
               ]"
             >
               <!-- Checkmark for 100% complete pages -->
-              <svg 
-                v-if="page.completionPercentage === 100 && !page.isActive" 
-                class="accent-text w-5 h-5 text-accent" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                v-if="page.completionPercentage === 100 && !page.isActive"
+                class="accent-text w-5 h-5 text-accent"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -56,10 +56,12 @@
 
           <!-- Form blocks (only visible for active page) -->
           <div v-if="page.isActive && page.blocks.length > 0" class="ml-11 mt-2 space-y-4">
-            <div
+            <button
               v-for="block in page.blocks"
               :key="block.id"
-              class="mb-3"
+              type="button"
+              class="mb-3 w-full text-left rounded cursor-pointer hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-paper"
+              @click="handleBlockClick(block, page.id)"
             >
               <div class="flex items-center justify-between mb-1">
                 <span class="text-sm text-text-muted">{{ block.title }}</span>
@@ -72,7 +74,7 @@
                   :style="{ width: `${block.percentage}%` }"
                 ></div>
               </div>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -90,34 +92,32 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOnboardingStore } from '../../stores/onboardingStore'
 import { formData } from '../../data/formData'
+import { getStepById } from '../../data/onboardingConfig'
 
 const route = useRoute()
 const router = useRouter()
 const store = useOnboardingStore()
 
-const currentPage = computed(() => {
-  if (route.path.includes('/step1/page1')) return 'page1'
-  if (route.path.includes('/step1/page2')) return 'page2'
-  if (route.path.includes('/step1/page3')) return 'page3'
-  return null
-})
+const stepId = computed(() => route.params.stepId || '')
+const pageId = computed(() => route.params.pageId || '')
+
+const currentStepConfig = computed(() => getStepById(stepId.value))
 
 const pages = computed(() => {
-  const step1Pages = formData.step1
-  const pageIds = ['page1', 'page2', 'page3']
-  
-  return pageIds.map((pageId, index) => {
-    const pageData = step1Pages[pageId]
-    const isActive = currentPage.value === pageId
-    const completionPercentage = store.calculatePageCompletionPercentage('step1', pageId)
-    
-    // Get form blocks for this page (counts from store + formData so add/remove questions stays correct)
+  const config = currentStepConfig.value
+  if (!config) return []
+
+  return config.pageIds.map((pid, index) => {
+    const pageData = formData[stepId.value]?.[pid]
+    const isActive = pageId.value === pid
+    const completionPercentage = store.calculatePageCompletionPercentage(stepId.value, pid)
+
     const blocks = pageData ? pageData.formBlocks.map(block => {
-      const { answered, total } = store.getBlockProgressCounts('step1', pageId, block.id, block.questions)
+      const { answered, total } = store.getBlockProgressCounts(stepId.value, pid, block.id, block.questions)
       const percentage = total > 0 ? Math.round((answered / total) * 100) : 0
       return {
         id: block.id,
@@ -127,9 +127,9 @@ const pages = computed(() => {
         percentage
       }
     }) : []
-    
+
     return {
-      id: pageId,
+      id: pid,
       title: pageData ? pageData.title : '',
       isActive,
       completionPercentage,
@@ -138,18 +138,22 @@ const pages = computed(() => {
   })
 })
 
-const handlePageClick = (pageId) => {
-  // Progress is already saved in the store as user interacts with forms
-  // Navigate to the clicked page
-  const routeMap = {
-    'page1': '/step1/page1',
-    'page2': '/step1/page2',
-    'page3': '/step1/page3'
+const handlePageClick = (targetPageId) => {
+  const targetPath = `/step/${stepId.value}/page/${targetPageId}`
+  if (route.path !== targetPath) {
+    router.push(targetPath)
   }
-  
-  const targetRoute = routeMap[pageId]
-  if (targetRoute && route.path !== targetRoute) {
-    router.push(targetRoute)
+}
+
+const handleBlockClick = (block, blockPageId) => {
+  const blockId = 'block-' + block.id
+  if (pageId.value === blockPageId) {
+    nextTick(() => {
+      const el = document.getElementById(blockId)
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  } else {
+    router.push(`/step/${stepId.value}/page/${blockPageId}#${blockId}`)
   }
 }
 </script>
